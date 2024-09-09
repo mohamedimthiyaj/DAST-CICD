@@ -1,0 +1,62 @@
+# Use an official Ubuntu as a parent image
+FROM ubuntu:20.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    wget \
+    python3-pip \
+    gnupg \
+    ca-certificates \
+    openjdk-21-jre \
+    && apt-get clean
+
+# Download and install Google Chrome
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' && \
+    apt-get update && \
+    apt-get install -y google-chrome-stable --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set up Chrome to run as a non-privileged user
+RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome && \
+    mkdir -p /home/chrome && \
+    chown -R chrome:chrome /home/chrome && \
+    chown -R chrome:chrome /opt/google/chrome
+
+
+RUN useradd -ms /bin/bash burpuser
+# Switch to the new user
+USER burpuser
+RUN mkdir /root/app
+WORKDIR /opt/burpuser
+
+
+
+
+
+COPY burploader.jar /root/app/burploader.jar
+COPY burpsuite_pro.jar /root/app/burpsuite_pro.jar
+COPY burp-rest-api-2.2.0.jar /root/app/burp-rest-api-2.2.0.jar
+COPY test_random.json /root/app/test_random.json
+COPY Docker_burp.py /root/app/run.py
+
+# Create an entrypoint script to start Burp Suite
+COPY entrypoint.sh /root/app/entrypoint.sh
+RUN chmod +x /root/app/entrypoint.sh
+
+# Copy the requirements file into the container at /app
+COPY requirements.txt /root/app/requirements.txt
+
+# Install any needed packages specified in requirements.txt
+RUN pip3 install --no-cache-dir -r /root/app/requirements.txt
+
+# Verify installation by checking the Chrome version
+#RUN google-chrome --version
+
+
+
+CMD ["/opt/google/chrome", "--headless", "--remote-debugging-port=0"]

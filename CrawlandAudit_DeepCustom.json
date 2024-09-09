@@ -1,0 +1,36 @@
+{
+    "crawler":{
+        "customization":{
+            "allow_all_clickables":true,
+            "allow_out_of_scope_resources":true,
+            "application_uses_fragments_for_routing":"unsure",
+            "browser_based_navigation_mode":"yes",
+            "customize_user_agent":false,
+            "guess_hidden_graphql_endpoints":false,
+            "maximum_items_from_sitemap":1000,
+            "maximum_speculative_links":1000,
+            "parse_api_definitions":true,
+            "perform_graphql_introspection":true,
+            "request_robots_txt":true,
+            "request_sitemap":true,
+            "request_speculative":true,
+            "submit_forms":true,
+            "timeout_for_in_progress_resource_requests":10,
+            "user_agent":""
+        },
+        "error_handling":{
+            "number_of_follow_up_passes":1,
+            "pause_task_requests_timed_out_count":30,
+            "pause_task_requests_timed_out_percentage":0
+        }
+    },
+    "scanner":{
+        "error_handling":{
+            "consecutive_audit_check_failures_to_skip_insertion_point":2,
+            "consecutive_insertion_point_failures_to_fail_audit_item":2,
+            "number_of_follow_up_passes":1,
+            "pause_task_failed_audit_item_count":0,
+            "pause_task_failed_audit_item_percentage":0
+        }
+    }
+}

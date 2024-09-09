@@ -1,0 +1,43 @@
+sudo docker build -t burpsuite-base-1 .
+
+sudo docker run -it --name burpsuite-activation-1 burpsuite-base-1 /bin/bash -c "/root/app/entrypoint.sh"
+sudo docker rurpsuite-base-gui /bin/bash -c "/root/app/entrypoint.sh"
+
+sudo docker run -it --name burpsuite-activation --shm-size=512m -p 6901:6901 -e VNC_PW=password --build-arg START_XFCE4=1 burpsuite-base
+
+docker build -t burpsuite-base -f dockerfile-kasm-core .
+
+docker run -it --name burpsuite-activation burpsuite-base /bin/bash
+
+sudo docker commit burpsuite-activation burpsuite-pro
+
+docker exec -it burpsuite-activation /bin/bash
+
+sudo docker run -it --rm -p 1337:1337 -p 8090:8090 --name scan_burp burpsuite-pro-gui /bin/bash -c "python3 /root/app/run.py --rest_port=1377 --exet_port=9091"
+
+sudo docker run -it --rm -p 1377:1377 -p 9091:9091 --name scan_burp burpsuite-pro /bin/bash -c 'java "--add-opens=java.desktop/javax.swing=ALL-UNNAMED" "--add-opens=java.base/java.lang=ALL-UNNAMED" "--add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED" "--add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED" "--add-opens=java.base/jdk.internal.org.objectweb.asm.Opcodes=ALL-UNNAMED" "-javaagent:/root/app/burploader.jar" "-noverify" "-cp" "/root/app/burp-rest-api-2.2.0.jar:/root/app/burploader.jar:/root/app/burpsuite_pro.jar" "org.springframework.boot.loader.JarLauncher" "--headless.mode=true" "--address=0.0.0.0" "--server.port=8090" "--unpause-spider-and-scanner" "--user-config-file=/root/app/test_random.json"'
+
+docker run -it --name ubuntu-gui ubuntu20.04-gui /bin/bash -c "/root/app/entrypoint.sh"
+
+sudo docker build -t burpsuite-pro-final-1 .
+
+docker commit ubuntu-gui burpsuite-pro
+
+sudo docker run -it --rm -p 8080:8080 -p 8090:8090 burpsuite-pro-final-1 /bin/bash -c "/root/app/entrypoint.sh"
+
+sudo docker run -it --rm -p 1337:1337 -p 8090:8090 burpsuite-pro /bin/bash -c "/root/app/entrypoint.sh"
+
+sudo docker exec -it 932a44aff242 /bin/bash -c "python3 Web_DAST_Linux.py --url=http://testphp.vulnweb.com/ --output-folder=/root/app/ --filename=1 --severity=medium --confidential=certain --count=5"
+
+
+sudo docker build -t burpsuite-alpine -f Dockerfile.base .
+
+sudo docker run -it --name burpsuite-alpine-activation burpsuite-alpine /bin/bash -c "/root/app/entrypoint.sh"
+image name 
+burpsuite-pro
+
+sudo docker container prune
+
+sudo docker image prune -a
+
+/opt/google/chrome/chrome --headless --remote-debugging-port=0
